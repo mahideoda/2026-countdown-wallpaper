@@ -22,10 +22,21 @@
           const [showSettings, setShowSettings] = useState(false);
 
           useEffect(() => {
-            const saved = localStorage.getItem('wallpaper-birthdate');
-            if (saved) {
-              setBirthdate(saved);
+            // Check URL parameters first
+            const urlParams = new URLSearchParams(window.location.search);
+            const dateParam = urlParams.get('date');
+            
+            if (dateParam) {
+              setBirthdate(dateParam);
               setIsConfigured(true);
+              localStorage.setItem('wallpaper-birthdate', dateParam);
+            } else {
+              // Fallback to localStorage
+              const saved = localStorage.getItem('wallpaper-birthdate');
+              if (saved) {
+                setBirthdate(saved);
+                setIsConfigured(true);
+              }
             }
           }, []);
 
@@ -145,7 +156,8 @@
               <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-8">
                 <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-2xl max-w-md w-full border border-white/20">
                   <h2 className="text-2xl font-light text-white mb-6">Configure Your Wallpaper</h2>
-                  <p className="text-white/70 mb-6">Enter a start date to see days counting down to 2026 in real-time</p>
+                  <p className="text-white/70 mb-4">Enter a start date to see days counting down to 2026 in real-time</p>
+                  <p className="text-sm text-white/50 mb-6">Or use URL: ?date=2026-01-01</p>
                   <input
                     type="date"
                     className="w-full p-3 bg-white/20 border border-white/30 rounded-lg mb-4 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400"
